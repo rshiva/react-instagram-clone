@@ -6,9 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Input, Button } from '@material-ui/core';
 import ImageUpload from './ImageUpload'
+import Login from './Login'
 
 
-//Code for Modal
+// //Code for Modal
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
@@ -42,7 +43,7 @@ function App() {
   const [posts, setPosts] = useState([])
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
-  const [openSignIn, setOpenSignin]= useState(false);
+  // const [openSignIn, setOpenSignin]= useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -71,7 +72,7 @@ function App() {
 
   useEffect(() => {
     //every time new post is added this code gets called
-    db.collection('posts').onSnapshot(snapshot => {
+    db.collection('posts').orderBy("timestamp","desc").onSnapshot(snapshot => {
     setPosts(snapshot.docs.map(doc => ({
        id: doc.id,
       post: doc.data()
@@ -90,13 +91,6 @@ function App() {
     setOpen(false);
   };
 
-  const signInHandleOpen = () => {
-    setOpenSignin(true);
-  };
-
-  const signInHandleClose = () => {
-    setOpenSignin(false);
-  };
 
   const signup = (event) => {
     event.preventDefault();
@@ -110,18 +104,18 @@ function App() {
     .catch((error) => alert(error.message));
     setOpen(false);
     
+
   }
 
-  const signIn = (event) => {
-    event.preventDefault();
-    auth.signInWithEmailAndPassword(email, password)
-    .catch((error) => alert(error.message))
-    setOpenSignin(false);
-  }
 
   return (
     <div className="app">
-      <ImageUpload/>
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName}/>
+      ): (
+        <h3>You need to login to upload</h3>
+      )}
+      
      <div className="app_header">
       <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
       alt="instagram logo"/>
@@ -132,7 +126,7 @@ function App() {
         ): (
           <div className="login_contianer">
             <button type="button" onClick={handleOpen}>Signup</button>
-            <button type="button" onClick={signInHandleOpen}>SignIn</button>
+            <Login />
           </div>
         )
       }
@@ -157,30 +151,6 @@ function App() {
             <Input id="password" type="password" placeholder="password" value={password} 
                   onChange={(e) => setPassword(e.target.value)}/>
             <Button onClick={signup}>Signup</Button>
-          </form>
-        </center>
-        
-      </div>
-      </Modal>
-
-      <Modal
-        open={openSignIn}
-        onClose={signInHandleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-
-      <div style={modalStyle} className={classes.paper}>
-        <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
-              alt="instagram logo"/>
-        
-        <center>
-          <form className="app_signup">
-            <Input id="email" type="text" placeholder="email" value={email} 
-                  onChange={(e) => setEmail(e.target.value)}/>
-            <Input id="password" type="password" placeholder="password" value={password} 
-                  onChange={(e) => setPassword(e.target.value)}/>
-            <Button onClick={signIn}>SignIn</Button>
           </form>
         </center>
         
