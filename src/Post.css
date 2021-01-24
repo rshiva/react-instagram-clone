@@ -24,3 +24,26 @@
 .post_avatar {
   margin-right: 10px;
 }
+
+.post_commentBox {
+  display: flex;
+  margin-top: 10px;
+}
+
+.post_commentInput {
+  flex: 1;
+  border: None;
+  padding: 10px;
+  border-top: 1px solid lightgray;
+}
+
+.post_comment {
+  flex: 0;
+  border: None;
+  border-top: 1px solid lightgray;
+  color: #6082a3;
+}
+
+.post_comments {
+  padding: 10px;
+}
